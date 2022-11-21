@@ -9,7 +9,7 @@ services:
     environment:
       - MYSQL_DATABASE=wordpress
     volumes:
-      - dbdata:/var/lib/mysql
+      - dbdata2:/var/lib/mysql
     command: '--default-authentication-plugin=mysql_native_password'
     networks:
       - app-network
@@ -27,7 +27,7 @@ services:
       - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
       - WORDPRESS_DB_NAME=wordpress
     volumes:
-      - wordpress:/var/www/html
+      - wordpress2:/var/www/html
     networks:
       - app-network
 
@@ -39,8 +39,9 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - wordpress:/var/www/html
+      - wordpress2:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
     networks:
@@ -53,13 +54,13 @@ services:
     container_name: certbot
     volumes:
       - certbot-etc:/etc/letsencrypt
-      - wordpress:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email belev.job@gmail.com --agree-tos --no-eff-email --staging -d howhigh.live -d www.howhigh.live
+      - wordpress2:/var/www/html
+    command: certonly --webroot --webroot-path=/var/www/html --email belev.job@gmail.com --agree-tos --no-eff-email --force-renewal -d howhigh.live -d www.howhigh.live
    
 volumes:
   certbot-etc:
-  wordpress:
-  dbdata:
+  wordpress2:
+  dbdata2:
 
 networks:
   app-network:
