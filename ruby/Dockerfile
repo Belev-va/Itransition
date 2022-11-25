@@ -1,12 +1,8 @@
-FROM ubuntu:20.10
+FROM ubuntu:20.04
 
-FROM ruby:3.0
+RUN apt-get update &&  apt-get install -y ruby-full
 
-COPY . /ruby
-
-WORKDIR /ruby
-
-RUN ruby hello_world.rb
+CMD ["ruby", "-v"]
 
 
 
