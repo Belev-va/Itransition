@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+
+
+  
+
+  mysql:
+      image: mysql
+      volumes:
+          - ./db-data:/var/lib/mysql
+      command: '--default-authentication-plugin=mysql_native_password'
+      environment:
+          - MYSQL_ROOT_PASSWORD=Moskow2018
+      restart: always
+      networks:
+        - wordpress
+
+
+  wordpress:
+      depends_on:
+      - mysql
+      image: wordpress
+      volumes:
+          - ./wordpress:/var/www/html
+      environment:
+          - WORDPRESS_DB_NAME=wpdb
+          - WORDPRESS_TABLE_PREFIX=wp_
+          - WORDPRESS_DB_HOST=3306
+          - WORDPRESS_DB_PASSWORD=Moskow2018
+      networks:
+        - wordpress
+      restart: always
+  
+  nginx:
+      depends_on:
+      - wordpress
+      image: nginx:latest
+      ports:
+          - '80:80'
+          - "443:443"
+      volumes:
+          - ./nginx:/etc/nginx/conf.d
+          - ./logs/nginx:/var/log/nginx
+          - ./wordpress:/var/www/html
+      networks:
+        - wordpress
+      restart: always
+
+volumes:
+  nginx:
+  wordpress:
+  db-data:
+  logs:
+
+networks:
+  wordpress:
+    driver: bridge  
